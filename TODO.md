@@ -3,7 +3,7 @@
 ## Tip / base
 
 - Work-line **base**: `059f022` (`059f022cb9c4bdd30d3e8311eb9199ca92fed4f3`) — upstream `master` at start of this sequence.
-- Current tip: same until first agent commit lands.
+- Current tip: `e114c53` (flake.lock + docs/research).
 
 ## Done this session
 
