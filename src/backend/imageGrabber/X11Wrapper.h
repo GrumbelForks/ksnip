@@ -56,15 +56,17 @@ public:
     virtual QRect getFullScreenRect() const;
     virtual QRect getActiveWindowRect() const;
 	virtual CursorDto getCursorWithPosition() const;
-	// Left/right/top/bottom border sizes for the focused top-level window.
-	// Tries _NET_FRAME_EXTENTS then _GTK_FRAME_EXTENTS.
+	// Left/right/top/bottom border sizes for the focused window.
+	// Reparenting WMs (e.g. XFCE) store extents on the client, not the frame.
 	virtual X11FrameExtents getActiveWindowFrameExtents() const;
 
 protected:
 	QPoint getNativeCursorPosition() const;
     QRect getWindowRect(xcb_window_t window) const;
     xcb_window_t getActiveWindowId() const;
+	xcb_window_t getInputFocusWindowId() const;
 	X11FrameExtents getFrameExtents(xcb_window_t windowId) const;
+	X11FrameExtents guessFrameExtentsFromChild(xcb_window_t topLevelWindowId) const;
 };
 
 /*
