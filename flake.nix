@@ -10,8 +10,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        # Prefer Qt6 path (matches current nixpkgs packaging of ksnip).
-        qt = pkgs.qt6;
+        inherit (pkgs) kdePackages qt6;
       in
       {
         packages.default = pkgs.stdenv.mkDerivation {
@@ -20,24 +19,22 @@
 
           src = ./.;
 
-          nativeBuildInputs = with pkgs; [
-            cmake
-            extra-cmake-modules
-            qt.wrapQtAppsHook
-            qt.qttools
+          nativeBuildInputs = [
+            pkgs.cmake
+            kdePackages.extra-cmake-modules
+            qt6.wrapQtAppsHook
+            qt6.qttools
           ];
 
-          buildInputs = with pkgs; [
-            qt.qtbase
-            qt.qtsvg
-            # Image annotation / color picker (packaged in nixpkgs)
-            kimageannotator
-            kcolorpicker
-            # X11 / XCB capture support
-            xorg.libX11
-            xorg.libxcb
-            xorg.xcbutil
-            libxcb
+          buildInputs = [
+            kdePackages.kcolorpicker
+            kdePackages.kimageannotator
+            qt6.qtsvg
+            # X11 / XCB capture (not pulled in automatically for local src builds)
+            pkgs.xorg.libX11
+            pkgs.xorg.libxcb
+            pkgs.xorg.xcbutil
+            pkgs.libxcb
           ];
 
           cmakeFlags = [
@@ -66,13 +63,12 @@
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [ self.packages.${system}.default ];
-          packages = with pkgs; [
-            cmake
-            extra-cmake-modules
-            qt.qttools
-            # Handy for local iteration
-            gdb
-            clang-tools
+          packages = [
+            pkgs.cmake
+            kdePackages.extra-cmake-modules
+            qt6.qttools
+            pkgs.gdb
+            pkgs.clang-tools
           ];
           shellHook = ''
             echo "ksnip dev shell (Qt6). Example:"
