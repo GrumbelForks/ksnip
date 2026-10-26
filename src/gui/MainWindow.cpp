@@ -70,6 +70,7 @@ MainWindow::MainWindow(DependencyInjector *dependencyInjector) :
 	mVisibilityHandler(WidgetVisibilityHandlerFactory::create(this, mDependencyInjector->get<IPlatformChecker>())),
 	mFileDialogService(mDependencyInjector->get<IFileDialogService>()),
 	mWindowResizer(new WindowResizer(this, mConfig, this)),
+	mImageSizeLabel(new QLabel(this)),
 	mActionProcessor(new ActionProcessor),
 	mSavePathProvider(mDependencyInjector->get<ISavePathProvider>()),
 	mOcrWindowHandler(mDependencyInjector->get<IOcrWindowHandler>()),
@@ -309,6 +310,7 @@ void MainWindow::captureChanged()
 	mOpenDirectoryAction->setEnabled(mCaptureHandler->isPathValid());
 	mRemoveImageAction->setEnabled(mCaptureHandler->isPathValid());
 	updateApplicationTitle();
+	updateImageSizeInfo();
 }
 
 void MainWindow::updateApplicationTitle()
@@ -317,6 +319,20 @@ void MainWindow::updateApplicationTitle()
 	auto isUnsaved = !mCaptureHandler->isSaved();
 	auto applicationTitle = ApplicationTitleProvider::getApplicationTitle(QApplication::applicationName(), path, tr("Unsaved"), isUnsaved);
 	setWindowTitle(applicationTitle);
+}
+
+void MainWindow::updateImageSizeInfo()
+{
+	const auto image = mCaptureHandler->image();
+	if (image.isNull()) {
+		mImageSizeLabel->clear();
+		mImageSizeLabel->setToolTip(QString());
+		return;
+	}
+
+	const auto text = tr("%1 × %2").arg(image.width()).arg(image.height());
+	mImageSizeLabel->setText(text);
+	mImageSizeLabel->setToolTip(tr("Image size: %1 × %2 pixels").arg(image.width()).arg(image.height()));
 }
 
 void MainWindow::setEnablements(bool enabled)
@@ -394,6 +410,16 @@ void MainWindow::toggleDocks()
 
 void MainWindow::initGui()
 {
+	mImageSizeLabel->setObjectName(QLatin1String("ImageSizeLabel"));
+	mImageSizeLabel->setMinimumWidth(80);
+	mImageSizeLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	statusBar()->setSizeGripEnabled(true);
+	statusBar()->addPermanentWidget(mImageSizeLabel);
+	// Keep size current after crop/scale/canvas changes (single-capture mode
+	// does not route imageChanged through captureChanged).
+	connect(mImageAnnotator, &IImageAnnotator::imageChanged, this, &MainWindow::updateImageSizeInfo);
+
+
 	auto iconLoader = mDependencyInjector->get<IIconLoader>();
 
 	setWindowIcon(iconLoader->load(QLatin1String("ksnip")));
@@ -786,6 +812,7 @@ void MainWindow::captureEmpty()
 {
 	setEnablements(false);
 	mWindowResizer->resetAndResize();
+	updateImageSizeInfo();
 
 	if (isWindowMaximized()) {
 		mResizeOnNormalize = true;

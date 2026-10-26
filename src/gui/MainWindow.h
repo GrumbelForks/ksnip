@@ -141,6 +141,7 @@ private:
 	WidgetVisibilityHandler *mVisibilityHandler;
 	QSharedPointer<IFileDialogService> mFileDialogService;
 	WindowResizer *mWindowResizer;
+	QLabel *mImageSizeLabel;
 	ActionProcessor *mActionProcessor;
 	QSharedPointer<IOcrWindowHandler> mOcrWindowHandler;
 	QSharedPointer<IDelayHandler> mDelayHandler;
@@ -177,6 +178,7 @@ private slots:
 	void saveAsClicked();
 	void saveAllClicked();
 	void updateApplicationTitle();
+	void updateImageSizeInfo();
 	void capturePostProcessing();
 	void loadImageFromFile(const QString &path);
 	void loadImageFromPixmap(const QPixmap &pixmap);
