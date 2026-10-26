@@ -34,6 +34,19 @@
 
 #include "src/common/dtos/CursorDto.h"
 
+struct X11FrameExtents
+{
+	int left = 0;
+	int right = 0;
+	int top = 0;
+	int bottom = 0;
+
+	bool isNull() const
+	{
+		return left == 0 && right == 0 && top == 0 && bottom == 0;
+	}
+};
+
 class X11Wrapper
 {
 public:
@@ -43,11 +56,15 @@ public:
     virtual QRect getFullScreenRect() const;
     virtual QRect getActiveWindowRect() const;
 	virtual CursorDto getCursorWithPosition() const;
+	// Left/right/top/bottom border sizes for the focused top-level window.
+	// Tries _NET_FRAME_EXTENTS then _GTK_FRAME_EXTENTS.
+	virtual X11FrameExtents getActiveWindowFrameExtents() const;
 
 protected:
 	QPoint getNativeCursorPosition() const;
     QRect getWindowRect(xcb_window_t window) const;
     xcb_window_t getActiveWindowId() const;
+	X11FrameExtents getFrameExtents(xcb_window_t windowId) const;
 };
 
 /*

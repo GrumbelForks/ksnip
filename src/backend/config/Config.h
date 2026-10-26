@@ -181,6 +181,9 @@ public:
 	bool captureCursor() const override;
 	void setCaptureCursor(bool enabled) override;
 
+	bool includeWindowDecoration() const override;
+	void setIncludeWindowDecoration(bool enabled) override;
+
 	bool snippingAreaRulersEnabled() const override;
 	void setSnippingAreaRulersEnabled(bool enabled) override;
 

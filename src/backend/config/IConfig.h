@@ -176,6 +176,9 @@ public:
 	virtual bool captureCursor() const = 0;
 	virtual void setCaptureCursor(bool enabled) = 0;
 
+	virtual bool includeWindowDecoration() const = 0;
+	virtual void setIncludeWindowDecoration(bool enabled) = 0;
+
 	virtual bool snippingAreaRulersEnabled() const = 0;
 	virtual void setSnippingAreaRulersEnabled(bool enabled) = 0;
 

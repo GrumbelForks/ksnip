@@ -44,6 +44,10 @@ bool BaseX11ImageGrabber::isSnippingAreaBackgroundTransparent() const
 QRect BaseX11ImageGrabber::activeWindowRect() const
 {
 	auto rect = mX11Wrapper->getActiveWindowRect();
+	if (!mConfig->includeWindowDecoration()) {
+		const auto extents = mX11Wrapper->getActiveWindowFrameExtents();
+		rect = rect.adjusted(extents.left, extents.top, -extents.right, -extents.bottom);
+	}
 	return mHdpiScaler.unscale(rect);
 }
 

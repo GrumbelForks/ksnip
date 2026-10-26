@@ -264,6 +264,11 @@ QString ConfigOptions::captureCursorString()
 	return imageGrabberSectionString() + QLatin1String("CaptureCursor");
 }
 
+QString ConfigOptions::includeWindowDecorationString()
+{
+	return imageGrabberSectionString() + QLatin1String("IncludeWindowDecoration");
+}
+
 QString ConfigOptions::snippingAreaRulersEnabledString()
 {
 	return imageGrabberSectionString() + QLatin1String("SnippingAreaRulersEnabled");

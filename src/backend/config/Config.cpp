@@ -744,6 +744,21 @@ void Config::setCaptureCursor(bool  enabled)
 	saveValue(ConfigOptions::captureCursorString(), enabled);
 }
 
+bool Config::includeWindowDecoration() const
+{
+	// Default false: capture client area only (exclude title bar / borders / shadows
+	// when the WM publishes frame extents). Matches GNOME behaviour and issues #460/#912.
+	return loadValue(ConfigOptions::includeWindowDecorationString(), false).toBool();
+}
+
+void Config::setIncludeWindowDecoration(bool enabled)
+{
+	if (includeWindowDecoration() == enabled) {
+		return;
+	}
+	saveValue(ConfigOptions::includeWindowDecorationString(), enabled);
+}
+
 bool Config::snippingAreaRulersEnabled() const
 {
 	return loadValue(ConfigOptions::snippingAreaRulersEnabledString(), true).toBool();

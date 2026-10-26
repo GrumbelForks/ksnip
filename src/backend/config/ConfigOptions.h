@@ -74,6 +74,7 @@ public:
 	static QString useDefaultStickerString();
 	static QString isControlsWidgetVisibleString();
 	static QString captureCursorString();
+	static QString includeWindowDecorationString();
 	static QString snippingAreaRulersEnabledString();
 	static QString snippingAreaPositionAndSizeInfoEnabledString();
 	static QString snippingAreaMagnifyingGlassEnabledString();

@@ -21,6 +21,7 @@
 
 ImageGrabberSettings::ImageGrabberSettings(const QSharedPointer<IConfig> &config) :
 		mCaptureCursorCheckbox(new QCheckBox(this)),
+		mIncludeWindowDecorationCheckbox(new QCheckBox(this)),
 		mHideMainWindowDuringScreenshotCheckbox(new QCheckBox(this)),
 		mShowMainWindowAfterTakingScreenshotCheckbox(new QCheckBox(this)),
 		mForceGenericWaylandCheckbox(new QCheckBox(this)),
@@ -40,6 +41,7 @@ void ImageGrabberSettings::saveSettings()
 {
 	mConfig->setHideMainWindowDuringScreenshot(mHideMainWindowDuringScreenshotCheckbox->isChecked());
 	mConfig->setCaptureCursor(mCaptureCursorCheckbox->isChecked());
+	mConfig->setIncludeWindowDecoration(mIncludeWindowDecorationCheckbox->isChecked());
 	mConfig->setShowMainWindowAfterTakingScreenshotEnabled(mShowMainWindowAfterTakingScreenshotCheckbox->isChecked());
 	mConfig->setForceGenericWaylandEnabled(mForceGenericWaylandCheckbox->isChecked());
 	mConfig->setScaleGenericWaylandScreenshots(mScaleGenericWaylandScreenshotsCheckbox->isChecked());
@@ -51,6 +53,13 @@ void ImageGrabberSettings::initGui()
 	mCaptureCursorCheckbox->setText(tr("Capture mouse cursor on screenshot"));
 	mCaptureCursorCheckbox->setToolTip(tr("Should mouse cursor be visible on\n"
 	                                      "screenshots."));
+
+	mIncludeWindowDecorationCheckbox->setText(tr("Include window decorations"));
+	mIncludeWindowDecorationCheckbox->setToolTip(tr("When capturing a single window, include the\n"
+	                                                "title bar, borders and shadows. When disabled,\n"
+	                                                "only the window content (client area) is\n"
+	                                                "captured if the window manager reports frame\n"
+	                                                "extents (X11)."));
 
 	mShowMainWindowAfterTakingScreenshotCheckbox->setText(tr("Show Main Window after capturing screenshot"));
 	mShowMainWindowAfterTakingScreenshotCheckbox->setToolTip(tr("Show Main Window after capturing a new screenshot\n"
@@ -88,13 +97,14 @@ void ImageGrabberSettings::initGui()
 	mLayout->setAlignment(Qt::AlignTop);
 	mLayout->setColumnMinimumWidth(0, 10);
 	mLayout->addWidget(mCaptureCursorCheckbox, 0, 0, 1, 3);
-	mLayout->addWidget(mShowMainWindowAfterTakingScreenshotCheckbox, 1, 0, 1, 3);
-	mLayout->addWidget(mHideMainWindowDuringScreenshotCheckbox, 2, 0, 1, 3);
-	mLayout->addWidget(mForceGenericWaylandCheckbox, 3, 0, 1, 3);
-	mLayout->addWidget(mScaleGenericWaylandScreenshotsCheckbox, 4, 0, 1, 3);
-	mLayout->setRowMinimumHeight(5, 15);
-	mLayout->addWidget(mImplicitCaptureDelayLabel, 6, 0, 1, 1);
-	mLayout->addWidget(mImplicitCaptureDelaySpinBox, 6, 1, Qt::AlignLeft);
+	mLayout->addWidget(mIncludeWindowDecorationCheckbox, 1, 0, 1, 3);
+	mLayout->addWidget(mShowMainWindowAfterTakingScreenshotCheckbox, 2, 0, 1, 3);
+	mLayout->addWidget(mHideMainWindowDuringScreenshotCheckbox, 3, 0, 1, 3);
+	mLayout->addWidget(mForceGenericWaylandCheckbox, 4, 0, 1, 3);
+	mLayout->addWidget(mScaleGenericWaylandScreenshotsCheckbox, 5, 0, 1, 3);
+	mLayout->setRowMinimumHeight(6, 15);
+	mLayout->addWidget(mImplicitCaptureDelayLabel, 7, 0, 1, 1);
+	mLayout->addWidget(mImplicitCaptureDelaySpinBox, 7, 1, Qt::AlignLeft);
 
 	setTitle(tr("Image Grabber"));
 	setLayout(mLayout);
@@ -104,6 +114,7 @@ void ImageGrabberSettings::loadConfig()
 {
 	mHideMainWindowDuringScreenshotCheckbox->setChecked(mConfig->hideMainWindowDuringScreenshot());
 	mCaptureCursorCheckbox->setChecked(mConfig->captureCursor());
+	mIncludeWindowDecorationCheckbox->setChecked(mConfig->includeWindowDecoration());
 	mShowMainWindowAfterTakingScreenshotCheckbox->setChecked(mConfig->showMainWindowAfterTakingScreenshotEnabled());
 	mForceGenericWaylandCheckbox->setChecked(mConfig->forceGenericWaylandEnabled());
 	mForceGenericWaylandCheckbox->setEnabled(!mConfig->isForceGenericWaylandEnabledReadOnly());

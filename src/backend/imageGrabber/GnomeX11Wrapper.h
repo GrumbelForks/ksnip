@@ -20,28 +20,16 @@
 #ifndef KSNIP_GNOMEX11WRAPPER_H
 #define KSNIP_GNOMEX11WRAPPER_H
 
-#include <QProcess>
-#include <QRegularExpression>
-
 #include "X11Wrapper.h"
 
+// GNOME-specific X11 behaviour previously lived here (_GTK_FRAME_EXTENTS).
+// Frame-extent handling is now centralized in X11Wrapper / BaseX11ImageGrabber
+// and controlled by the includeWindowDecoration setting.
 class GnomeX11Wrapper : public X11Wrapper
 {
 public:
 	GnomeX11Wrapper() = default;
 	~GnomeX11Wrapper() = default;
-	QRect getActiveWindowRect() const override;
-
-private:
-	struct FrameExtents
-	{
-		int left;
-		int right;
-		int top;
-		int bottom;
-	};
-
-	static FrameExtents getGtkFrameExtents(unsigned int windowId);
 };
 
 #endif //KSNIP_GNOMEX11WRAPPER_H

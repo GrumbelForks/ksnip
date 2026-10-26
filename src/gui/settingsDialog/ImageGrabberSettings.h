@@ -38,6 +38,7 @@ public:
 
 private:
 	QCheckBox *mCaptureCursorCheckbox;
+	QCheckBox *mIncludeWindowDecorationCheckbox;
 	QCheckBox *mHideMainWindowDuringScreenshotCheckbox;
 	QCheckBox *mShowMainWindowAfterTakingScreenshotCheckbox;
 	QCheckBox *mForceGenericWaylandCheckbox;

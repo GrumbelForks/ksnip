@@ -25,6 +25,8 @@
 
 #include "X11Wrapper.h"
 
+#include <cstring>
+
 #include <X11/Xlib.h>
 
 bool X11Wrapper::isCompositorActive() const
@@ -125,4 +127,52 @@ CursorDto X11Wrapper::getCursorWithPosition() const
 	cursorPosition -= QPoint(cursorReply->xhot, cursorReply->yhot);
 
 	return { QPixmap::fromImage(cursorImage, Qt::AutoColor), cursorPosition };
+}
+
+X11FrameExtents X11Wrapper::getActiveWindowFrameExtents() const
+{
+	return getFrameExtents(getActiveWindowId());
+}
+
+X11FrameExtents X11Wrapper::getFrameExtents(xcb_window_t windowId) const
+{
+	X11FrameExtents values{};
+	if (windowId == 0) {
+		return values;
+	}
+
+	auto connection = QX11Info::connection();
+
+	auto readExtents = [&](const char *atomName) -> bool {
+		auto atomCookie = xcb_intern_atom(connection, 0, strlen(atomName), atomName);
+		ScopedCPointer<xcb_intern_atom_reply_t> atomReply(xcb_intern_atom_reply(connection, atomCookie, nullptr));
+		if (atomReply.isNull()) {
+			return false;
+		}
+
+		auto cookie = xcb_get_property(connection, 0, windowId, atomReply->atom, XCB_ATOM_CARDINAL, 0, 4);
+		ScopedCPointer<xcb_get_property_reply_t> reply(xcb_get_property_reply(connection, cookie, nullptr));
+		if (reply.isNull()) {
+			return false;
+		}
+
+		const int length = xcb_get_property_value_length(reply.data());
+		if (length < 16) { // 4 * uint32
+			return false;
+		}
+
+		auto extents = static_cast<uint32_t*>(xcb_get_property_value(reply.data()));
+		values.left = static_cast<int>(extents[0]);
+		values.right = static_cast<int>(extents[1]);
+		values.top = static_cast<int>(extents[2]);
+		values.bottom = static_cast<int>(extents[3]);
+		return !values.isNull();
+	};
+
+	// Prefer the EWMH standard; fall back to GTK's shadow/border extents.
+	if (!readExtents("_NET_FRAME_EXTENTS")) {
+		readExtents("_GTK_FRAME_EXTENTS");
+	}
+
+	return values;
 }

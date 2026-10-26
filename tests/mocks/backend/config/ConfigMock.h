@@ -165,6 +165,8 @@ public:
 
 	MOCK_METHOD(bool, captureCursor, (), (const, override));
 	MOCK_METHOD(void, setCaptureCursor, (bool enabled), (override));
+	MOCK_METHOD(bool, includeWindowDecoration, (), (const, override));
+	MOCK_METHOD(void, setIncludeWindowDecoration, (bool enabled), (override));
 
 	MOCK_METHOD(bool, snippingAreaRulersEnabled, (), (const, override));
 	MOCK_METHOD(void, setSnippingAreaRulersEnabled, (bool enabled), (override));
